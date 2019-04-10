@@ -92,6 +92,8 @@ describe('transformPresence', () => {
   });
 
   it('nested string operations', () => {
+
+    // Single level
     assert.deepEqual(
       transformPresence(
         { u: 'user', c: 8, s: [['content', 5, 7]] },
@@ -101,6 +103,7 @@ describe('transformPresence', () => {
       { u: 'user', c: 8, s: [['content', 6, 8]] }
     );
 
+    // Multiple level
     assert.deepEqual(
       transformPresence(
         { u: 'user', c: 8, s: [['content', 'deeply', 'nested', 5, 7]] },
@@ -108,6 +111,16 @@ describe('transformPresence', () => {
         true
       ),
       { u: 'user', c: 8, s: [['content', 'deeply', 'nested', 6, 8]] }
+    );
+
+    // Op not matching path
+    assert.deepEqual(
+      transformPresence(
+        { u: 'user', c: 8, s: [['content', 'deeply', 'nested', 5, 7]] },
+        [{ p: ['content', 'somewhere', 'else', 0], si: 'a' }], // Insert the 'a' character at position 0.
+        true
+      ),
+      { u: 'user', c: 8, s: [['content', 'deeply', 'nested', 5, 7]] }
     );
   });
 
