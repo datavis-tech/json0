@@ -113,7 +113,7 @@ describe 'text0', ->
       t [{d:'abc', p:10}, {d:'xyz', p:11}]
 
 
-  describe 'randomizer', -> it 'passes', ->
+  describe.skip 'randomizer', -> it 'passes', ->
     @timeout 4000
     @slow 4000
     fuzzer text0, require('./text0-generator')

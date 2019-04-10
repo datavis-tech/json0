@@ -389,7 +389,7 @@ genTests = (type) ->
       assert.deepEqual [], type.transform [{p:['k'], od:'x'}], [{p:['k'], od:'x'}], 'left'
       assert.deepEqual [], type.transform [{p:['k'], od:'x'}], [{p:['k'], od:'x'}], 'right'
 
-  describe 'randomizer', ->
+  describe.skip 'randomizer', ->
     @timeout 20000
     @slow 6000
     it 'passes', ->
