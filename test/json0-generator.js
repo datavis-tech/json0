@@ -9,7 +9,7 @@
  */
 let genRandomOp;
 const json0 = require('../lib/json0');
-const {randomInt, randomReal, randomWord} = require('ot-fuzzer');
+const { randomInt, randomReal, randomWord } = require('ot-fuzzer');
 
 // This is an awful function to clone a document snapshot for use by the random
 // op generator. .. Since we don't want to corrupt the original object with
@@ -28,7 +28,9 @@ const randomKey = function(obj) {
     let count = 0;
 
     for (let key in obj) {
-      if (randomReal() < (1/++count)) { result = key; }
+      if (randomReal() < 1 / ++count) {
+        result = key;
+      }
     }
     return result;
   }
@@ -39,22 +41,35 @@ const randomKey = function(obj) {
 const randomNewKey = function(obj) {
   // There's no do-while loop in coffeescript.
   let key = randomWord();
-  while (obj[key] !== undefined) { key = randomWord(); }
+  while (obj[key] !== undefined) {
+    key = randomWord();
+  }
   return key;
 };
 
 // Generate a random object
 var randomThing = function() {
   switch (randomInt(6)) {
-    case 0: return null;
-    case 1: return '';
-    case 2: return randomWord();
+    case 0:
+      return null;
+    case 1:
+      return '';
+    case 2:
+      return randomWord();
     case 3:
       var obj = {};
-      for (let i = 1, end = randomInt(5), asc = 1 <= end; asc ? i <= end : i >= end; asc ? i++ : i--) { obj[randomNewKey(obj)] = randomThing(); }
+      for (
+        let i = 1, end = randomInt(5), asc = 1 <= end;
+        asc ? i <= end : i >= end;
+        asc ? i++ : i--
+      ) {
+        obj[randomNewKey(obj)] = randomThing();
+      }
       return obj;
-    case 4: return (__range__(1, randomInt(5), true).map((j) => randomThing()));
-    case 5: return randomInt(50);
+    case 4:
+      return __range__(1, randomInt(5), true).map(j => randomThing());
+    case 5:
+      return randomInt(50);
   }
 };
 
@@ -62,9 +77,11 @@ var randomThing = function() {
 const randomPath = function(data) {
   const path = [];
 
-  while ((randomReal() > 0.85) && (typeof data === 'object')) {
+  while (randomReal() > 0.85 && typeof data === 'object') {
     const key = randomKey(data);
-    if (key == null) { break; }
+    if (key == null) {
+      break;
+    }
 
     path.push(key);
     data = data[key];
@@ -73,11 +90,10 @@ const randomPath = function(data) {
   return path;
 };
 
-
-module.exports = (genRandomOp = function(data) {
+module.exports = genRandomOp = function(data) {
   let pct = 0.95;
 
-  const container = {data: clone(data)};
+  const container = { data: clone(data) };
 
   const op = (() => {
     const result = [];
@@ -97,7 +113,7 @@ module.exports = (genRandomOp = function(data) {
       }
       const operand = parent[key];
 
-      if ((randomReal() < 0.4) && (parent !== container) && Array.isArray(parent)) {
+      if (randomReal() < 0.4 && parent !== container && Array.isArray(parent)) {
         // List move
         const newIndex = randomInt(parent.length);
 
@@ -106,75 +122,71 @@ module.exports = (genRandomOp = function(data) {
         // Insert it in the new position.
         parent.splice(newIndex, 0, operand);
 
-        result.push({p:path, lm:newIndex});
-
-      } else if ((randomReal() < 0.3) || (operand === null)) {
+        result.push({ p: path, lm: newIndex });
+      } else if (randomReal() < 0.3 || operand === null) {
         // Replace
 
         const newValue = randomThing();
         parent[key] = newValue;
 
         if (Array.isArray(parent)) {
-          result.push({p:path, ld:operand, li:clone(newValue)});
+          result.push({ p: path, ld: operand, li: clone(newValue) });
         } else {
-          result.push({p:path, od:operand, oi:clone(newValue)});
+          result.push({ p: path, od: operand, oi: clone(newValue) });
         }
-
       } else if (typeof operand === 'string') {
         // String. This code is adapted from the text op generator.
 
         var c, str;
-        if ((randomReal() > 0.5) || (operand.length === 0)) {
+        if (randomReal() > 0.5 || operand.length === 0) {
           // Insert
           pos = randomInt(operand.length + 1);
           str = randomWord() + ' ';
 
           path.push(pos);
           parent[key] = operand.slice(0, pos) + str + operand.slice(pos);
-          c = {p:path, si:str};
+          c = { p: path, si: str };
         } else {
           // Delete
           pos = randomInt(operand.length);
           length = Math.min(randomInt(4), operand.length - pos);
-          str = operand.slice(pos, (pos + length));
+          str = operand.slice(pos, pos + length);
 
           path.push(pos);
           parent[key] = operand.slice(0, pos) + operand.slice(pos + length);
-          c = {p:path, sd:str};
+          c = { p: path, sd: str };
         }
 
         if (json0._testStringSubtype) {
           // Subtype
-          const subOp = {p:path.pop()};
+          const subOp = { p: path.pop() };
           if (c.si != null) {
             subOp.i = c.si;
           } else {
             subOp.d = c.sd;
           }
 
-          c = {p:path, t:'text0', o:[subOp]};
+          c = { p: path, t: 'text0', o: [subOp] };
         }
 
         result.push(c);
-
       } else if (typeof operand === 'number') {
         // Number
         const inc = randomInt(10) - 3;
         parent[key] += inc;
-        result.push({p:path, na:inc});
-
+        result.push({ p: path, na: inc });
       } else if (Array.isArray(operand)) {
         // Array. Replace is covered above, so we'll just randomly insert or delete.
         // This code looks remarkably similar to string insert, above.
 
-        if ((randomReal() > 0.5) || (operand.length === 0)) {
+        if (randomReal() > 0.5 || operand.length === 0) {
           // Insert
           pos = randomInt(operand.length + 1);
           obj = randomThing();
 
           path.push(pos);
           operand.splice(pos, 0, obj);
-          result.push({p:path, li:clone(obj)});
+          result.push({ p: path, li: clone(obj) });
         } else {
           // Delete
           pos = randomInt(operand.length);
@@ -182,26 +194,26 @@ module.exports = (genRandomOp = function(data) {
 
           path.push(pos);
           operand.splice(pos, 1);
-          result.push({p:path, ld:clone(obj)});
+          result.push({ p: path, ld: clone(obj) });
         }
       } else {
         // Object
         let k = randomKey(operand);
 
-        if ((randomReal() > 0.5) || (k == null)) {
+        if (randomReal() > 0.5 || k == null) {
           // Insert
           k = randomNewKey(operand);
           obj = randomThing();
 
           path.push(k);
           operand[k] = obj;
-          result.push({p:path, oi:clone(obj)});
+          result.push({ p: path, oi: clone(obj) });
         } else {
           obj = operand[k];
 
           path.push(k);
           delete operand[k];
-          result.push({p:path, od:clone(obj)});
+          result.push({ p: path, od: clone(obj) });
         }
       }
     }
@@ -209,7 +221,7 @@ module.exports = (genRandomOp = function(data) {
   })();
 
   return [op, container.data];
-});
+};
 
 function __range__(left, right, inclusive) {
   let range = [];
