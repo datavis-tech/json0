@@ -92,7 +92,6 @@ describe('transformPresence', () => {
   });
 
   it('nested string operations', () => {
-
     // Single level
     assert.deepEqual(
       transformPresence(
@@ -121,6 +120,30 @@ describe('transformPresence', () => {
         true
       ),
       { u: 'user', c: 8, s: [['content', 'deeply', 'nested', 5, 7]] }
+    );
+
+    // Multiple selections
+    assert.deepEqual(
+      transformPresence(
+        {
+          u: 'user',
+          c: 8,
+          s: [
+            ['content', 'deeply', 'nested', 5, 7],
+            ['content', 'somewhere', 'else', 5, 7]
+          ]
+        },
+        [{ p: ['content', 'somewhere', 'else', 0], si: 'a' }], // Insert the 'a' character at position 0.
+        true
+      ),
+      {
+        u: 'user',
+        c: 8,
+        s: [
+          ['content', 'deeply', 'nested', 5, 7],
+          ['content', 'somewhere', 'else', 6, 8]
+        ]
+      }
     );
   });
 
