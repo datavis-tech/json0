@@ -1,171 +1,138 @@
-const assert = require('assert')
-const json = require('../lib/json0')
-
-const { createPresence } = json;
+const assert = require('assert');
+const {createPresence, transformPresence} = require('../lib/json0');
 
 // These tests are inspired by the ones found here:
 // https://github.com/Teamwork/ot-rich-text/blob/master/test/Operation.js
 describe('createPresence', () => {
   it('basic tests', () => {
-    const defaultPresence = { u: '', c: 0, s: [] };
-    const presence = { u: '5', c: 8, s: [[1, 2], [9, 5]] };
+    const defaultPresence = {u: '', c: 0, s: []};
+    const presence = {u: '5', c: 8, s: [[1, 2], [9, 5]]};
 
     assert.deepEqual(createPresence(), defaultPresence);
     assert.deepEqual(createPresence(null), defaultPresence);
     assert.deepEqual(createPresence(true), defaultPresence);
+    assert.deepEqual(createPresence({u: 5, c: 8, s: [1, 2]}), defaultPresence);
     assert.deepEqual(
-      createPresence({ u: 5, c: 8, s: [1, 2] }),
-      defaultPresence
+      createPresence({u: '5', c: '8', s: [1, 2]}),
+      defaultPresence,
     );
     assert.deepEqual(
-      createPresence({ u: '5', c: '8', s: [1, 2] }),
-      defaultPresence
-    );
-    assert.deepEqual(
-      createPresence({ u: '5', c: 8, s: [1.5, 2] }),
-      defaultPresence
+      createPresence({u: '5', c: 8, s: [1.5, 2]}),
+      defaultPresence,
     );
     assert.strictEqual(createPresence(presence), presence);
   });
 });
 
-// describe('transformPresence', () => {
-//   it('basic tests', () => {
-//     assert.deepEqual(
-//       transformPresence(
-//         {
-//           u: 'user',
-//           c: 8,
-//           s: [[5, 7]]
-//         },
-//         [],
-//         true
-//       ),
-//       {
-//         u: 'user',
-//         c: 8,
-//         s: [[5, 7]]
-//       }
-//     );
-//     assert.deepEqual(
-//       transformPresence(
-//         {
-//           u: 'user',
-//           c: 8,
-//           s: [[5, 7]]
-//         },
-//         [],
-//         false
-//       ),
-//       {
-//         u: 'user',
-//         c: 8,
-//         s: [[5, 7]]
-//       }
-//     );
-// 
-//     assert.deepEqual(
-//       transformPresence(
-//         {
-//           u: 'user',
-//           c: 8,
-//           s: [[5, 7]]
-//         },
-//         [createRetain(3), createDelete(2), createInsertText('a')],
-//         true
-//       ),
-//       {
-//         u: 'user',
-//         c: 8,
-//         s: [[4, 6]]
-//       }
-//     );
-//     assert.deepEqual(
-//       transformPresence(
-//         {
-//           u: 'user',
-//           c: 8,
-//           s: [[5, 7]]
-//         },
-//         [createRetain(3), createDelete(2), createInsertText('a')],
-//         false
-//       ),
-//       {
-//         u: 'user',
-//         c: 8,
-//         s: [[3, 6]]
-//       }
-//     );
-// 
-//     assert.deepEqual(
-//       transformPresence(
-//         {
-//           u: 'user',
-//           c: 8,
-//           s: [[5, 7]]
-//         },
-//         [createRetain(5), createDelete(2), createInsertText('a')],
-//         true
-//       ),
-//       {
-//         u: 'user',
-//         c: 8,
-//         s: [[6, 6]]
-//       }
-//     );
-//     assert.deepEqual(
-//       transformPresence(
-//         {
-//           u: 'user',
-//           c: 8,
-//           s: [[5, 7]]
-//         },
-//         [createRetain(5), createDelete(2), createInsertText('a')],
-//         false
-//       ),
-//       {
-//         u: 'user',
-//         c: 8,
-//         s: [[5, 5]]
-//       }
-//     );
-// 
-//     assert.deepEqual(
-//       transformPresence(
-//         {
-//           u: 'user',
-//           c: 8,
-//           s: [[5, 7], [8, 2]]
-//         },
-//         [createInsertText('a')],
-//         false
-//       ),
-//       {
-//         u: 'user',
-//         c: 8,
-//         s: [[6, 8], [9, 3]]
-//       }
-//     );
-// 
-//     assert.deepEqual(
-//       transformPresence(
-//         {
-//           u: 'user',
-//           c: 8,
-//           s: [[1, 1], [2, 2]]
-//         },
-//         [createInsertText('a')],
-//         false
-//       ),
-//       {
-//         u: 'user',
-//         c: 8,
-//         s: [[2, 2], [3, 3]]
-//       }
-//     );
-//   });
-// });
-// 
+describe('transformPresence', () => {
+  it('basic tests', () => {
+    assert.deepEqual(
+      transformPresence({u: 'user', c: 8, s: [[5, 7]]}, [], true),
+      {u: 'user', c: 8, s: [[5, 7]]},
+    );
+    // assert.deepEqual(
+    //   transformPresence({u: 'user', c: 8, s: [[5, 7]]}, [], false),
+    //   {u: 'user', c: 8, s: [[5, 7]]},
+    // );
+
+    //assert.deepEqual(
+    //  transformPresence(
+    //    {u: 'user', c: 8, s: [[5, 7]]},
+    //    [createRetain(3), createDelete(2), createInsertText('a')],
+    //    true,
+    //  ),
+    //  {
+    //    u: 'user',
+    //    c: 8,
+    //    s: [[4, 6]],
+    //  },
+    //);
+    //assert.deepEqual(
+    //  transformPresence(
+    //    {
+    //      u: 'user',
+    //      c: 8,
+    //      s: [[5, 7]],
+    //    },
+    //    [createRetain(3), createDelete(2), createInsertText('a')],
+    //    false,
+    //  ),
+    //  {
+    //    u: 'user',
+    //    c: 8,
+    //    s: [[3, 6]],
+    //  },
+    //);
+
+    //assert.deepEqual(
+    //  transformPresence(
+    //    {
+    //      u: 'user',
+    //      c: 8,
+    //      s: [[5, 7]],
+    //    },
+    //    [createRetain(5), createDelete(2), createInsertText('a')],
+    //    true,
+    //  ),
+    //  {
+    //    u: 'user',
+    //    c: 8,
+    //    s: [[6, 6]],
+    //  },
+    //);
+    //assert.deepEqual(
+    //  transformPresence(
+    //    {
+    //      u: 'user',
+    //      c: 8,
+    //      s: [[5, 7]],
+    //    },
+    //    [createRetain(5), createDelete(2), createInsertText('a')],
+    //    false,
+    //  ),
+    //  {
+    //    u: 'user',
+    //    c: 8,
+    //    s: [[5, 5]],
+    //  },
+    //);
+
+    //assert.deepEqual(
+    //  transformPresence(
+    //    {
+    //      u: 'user',
+    //      c: 8,
+    //      s: [[5, 7], [8, 2]],
+    //    },
+    //    [createInsertText('a')],
+    //    false,
+    //  ),
+    //  {
+    //    u: 'user',
+    //    c: 8,
+    //    s: [[6, 8], [9, 3]],
+    //  },
+    //);
+
+    //assert.deepEqual(
+    //  transformPresence(
+    //    {
+    //      u: 'user',
+    //      c: 8,
+    //      s: [[1, 1], [2, 2]],
+    //    },
+    //    [createInsertText('a')],
+    //    false,
+    //  ),
+    //  {
+    //    u: 'user',
+    //    c: 8,
+    //    s: [[2, 2], [3, 3]],
+    //  },
+    //);
+  });
+});
+//
 // describe('comparePresence', () => {
 //   it('basic tests', () => {
 //     assert.strictEqual(comparePresence(), true);
@@ -183,7 +150,7 @@ describe('createPresence', () => {
 //       false
 //     );
 //     assert.strictEqual(comparePresence({ u: '', c: 0, s: [] }, null), false);
-// 
+//
 //     assert.strictEqual(
 //       comparePresence(
 //         { u: 'user', c: 8, s: [[1, 2]] },
@@ -263,7 +230,7 @@ describe('createPresence', () => {
 //     );
 //   });
 // });
-// 
+//
 // describe('isValidPresence', () => {
 //   it('basic tests', () => {
 //     assert.strictEqual(isValidPresence(), false);
