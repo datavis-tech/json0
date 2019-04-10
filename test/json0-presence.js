@@ -30,10 +30,18 @@ describe('transformPresence', () => {
       transformPresence({u: 'user', c: 8, s: [[5, 7]]}, [], true),
       {u: 'user', c: 8, s: [[5, 7]]},
     );
-    // assert.deepEqual(
-    //   transformPresence({u: 'user', c: 8, s: [[5, 7]]}, [], false),
-    //   {u: 'user', c: 8, s: [[5, 7]]},
-    // );
+    assert.deepEqual(
+      transformPresence({u: 'user', c: 8, s: [[5, 7]]}, [], false),
+      {u: 'user', c: 8, s: [[5, 7]]},
+    );
+    assert.deepEqual(
+      transformPresence(
+        {u: 'user', c: 8, s: [[5, 7]]},
+        [{p: [0], si: 'a'}], // Insert the 'a' character at position 0.
+        true,
+      ),
+      { u: 'user', c: 8, s: [[6, 8]] },
+    );
 
     //assert.deepEqual(
     //  transformPresence(
