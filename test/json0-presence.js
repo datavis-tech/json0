@@ -35,7 +35,7 @@ describe('transformPresence', () => {
       {u: 'user', c: 8, s: [[5, 7]]},
     );
   });
-  it('top level string insert', () => {
+  it('top level string operations', () => {
 
     // Before selection
     assert.deepEqual(
@@ -65,6 +65,16 @@ describe('transformPresence', () => {
         true,
       ),
       { u: 'user', c: 8, s: [[5, 10]] },
+    );
+
+    // String deletion
+    assert.deepEqual(
+      transformPresence(
+        {u: 'user', c: 8, s: [[5, 7]]},
+        [{p: [5], sd: 'abc'}],
+        true,
+      ),
+      { u: 'user', c: 8, s: [[5, 5]] },
     );
 
     // After selection
