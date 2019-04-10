@@ -12,20 +12,20 @@ describe('createPresence', () => {
 
     assert.deepEqual(createPresence(), defaultPresence);
     assert.deepEqual(createPresence(null), defaultPresence);
-    //assert.deepEqual(createPresence(true), defaultPresence);
-    //assert.deepEqual(
-    //  createPresence({ u: 5, c: 8, s: [1, 2] }),
-    //  defaultPresence
-    //);
-    //assert.deepEqual(
-    //  createPresence({ u: '5', c: '8', s: [1, 2] }),
-    //  defaultPresence
-    //);
-    //assert.deepEqual(
-    //  createPresence({ u: '5', c: 8, s: [1.5, 2] }),
-    //  defaultPresence
-    //);
-    //assert.strictEqual(createPresence(presence), presence);
+    assert.deepEqual(createPresence(true), defaultPresence);
+    assert.deepEqual(
+      createPresence({ u: 5, c: 8, s: [1, 2] }),
+      defaultPresence
+    );
+    assert.deepEqual(
+      createPresence({ u: '5', c: '8', s: [1, 2] }),
+      defaultPresence
+    );
+    assert.deepEqual(
+      createPresence({ u: '5', c: 8, s: [1.5, 2] }),
+      defaultPresence
+    );
+    assert.strictEqual(createPresence(presence), presence);
   });
 });
 
