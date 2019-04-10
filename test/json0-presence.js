@@ -11,7 +11,7 @@ describe('createPresence', () => {
     const presence = { u: '5', c: 8, s: [[1, 2], [9, 5]] };
 
     assert.deepEqual(createPresence(), defaultPresence);
-    //assert.deepEqual(createPresence(null), defaultPresence);
+    assert.deepEqual(createPresence(null), defaultPresence);
     //assert.deepEqual(createPresence(true), defaultPresence);
     //assert.deepEqual(
     //  createPresence({ u: 5, c: 8, s: [1, 2] }),
