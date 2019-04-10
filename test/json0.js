@@ -1151,7 +1151,8 @@ const genTests = function(type) {
     });
   });
 
-  return describe('randomizer', function() {
+  // Skip this as it takes a long time.
+  return describe.skip('randomizer', function() {
     this.timeout(20000);
     this.slow(6000);
     it('passes', () => fuzzer(type, require('./json0-generator'), 1000));
