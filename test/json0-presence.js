@@ -34,6 +34,10 @@ describe('transformPresence', () => {
       transformPresence({u: 'user', c: 8, s: [[5, 7]]}, [], false),
       {u: 'user', c: 8, s: [[5, 7]]},
     );
+  });
+  it('top level string insert', () => {
+
+    // Before selection
     assert.deepEqual(
       transformPresence(
         {u: 'user', c: 8, s: [[5, 7]]},
@@ -42,6 +46,37 @@ describe('transformPresence', () => {
       ),
       { u: 'user', c: 8, s: [[6, 8]] },
     );
+
+    // Inside selection
+    assert.deepEqual(
+      transformPresence(
+        {u: 'user', c: 8, s: [[5, 7]]},
+        [{p: [6], si: 'a'}],
+        true,
+      ),
+      { u: 'user', c: 8, s: [[5, 8]] },
+    );
+
+    // Multiple characters
+    assert.deepEqual(
+      transformPresence(
+        {u: 'user', c: 8, s: [[5, 7]]},
+        [{p: [6], si: 'abc'}],
+        true,
+      ),
+      { u: 'user', c: 8, s: [[5, 10]] },
+    );
+
+    // After selection
+    assert.deepEqual(
+      transformPresence(
+        {u: 'user', c: 8, s: [[5, 7]]},
+        [{p: [8], si: 'a'}],
+        true,
+      ),
+      { u: 'user', c: 8, s: [[5, 7]] },
+    );
+  });
 
     //assert.deepEqual(
     //  transformPresence(
@@ -138,7 +173,6 @@ describe('transformPresence', () => {
     //    s: [[2, 2], [3, 3]],
     //  },
     //);
-  });
 });
 //
 // describe('comparePresence', () => {
