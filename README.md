@@ -12,29 +12,29 @@ The shape of our presence data is as follows:
 
 ```
 {
-    u: '123', // user ID
-    c: 8, // number of changes made by this user
-    s: [ // list of selections
-        [ 1, 1 ], // collapsed selection
-        [ 5, 7 ], // forward selection
-        [ 9, 4 ] // backward selection
-    ]
+  user: '123', // User ID.
+  changes: 8,  // Number of changes made by this user (for change detection).
+  presence: [  // List of sub-presence objects, per OT type.
+    {
+      type: 'rich-text',      // The OT type for this presence object.
+      path: ['some', 'path'], // The path of this presence object.
+      subPresence: {          // The type-specific presence object at this path.
+        u: '123', c: 8,       // An example of an ot-rich-text presence object.
+        s: [ [ 1, 1 ], [ 5, 7 ], [ 9, 4 ] ]
+      }
+    },
+    {
+      type: 'text0',          // An example of a text0 presence object.
+      path: ['some', 'other', 'path'],
+      subPresence: {
+        u: '123', c: 8,
+        s: [ [ 1, 1 ], [ 5, 7 ], [ 9, 4 ] ]
+      }
+    }
+  ]
 }
 ```
 
-Each selection listed in `s` ends with a 2-element array containing the selection start index and the selection end index. The elements in the array preceeding the last two represent the path of a `text0` entry within the `json0` data structure.
-
-For example, the following entry in the `s` array represents the user's cursor position within the `content` field (`data.content`):
-
-```
-['content', 2, 2]
-```
-
-We can access deeply nested entries with this structure as well. For example, the following `s` entry represents a text selection in `data.files[3].text`:
-
-```
-['files', 3, 'text', 4, 7]
-```
 
 The rest of the README content is from the original repo https://github.com/ottypes/json0.
 
